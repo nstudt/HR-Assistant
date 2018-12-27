@@ -1,0 +1,34 @@
+{
+  "name": "hr-assist",
+  "version": "1.0.0",
+  "description": "HR Assistant",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Edwin Studt",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "hbs": "^4.0.1",
+    "mongoose": "^5.4.1",
+    "passport": "^0.4.0",
+    "uuidv4": "^2.0.0"
+  },
+  "devDependencies": {
+    "jshint": "^2.9.7"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nstudt/HR-Assistant.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nstudt/HR-Assistant/issues"
+  },
+  "homepage": "https://github.com/nstudt/HR-Assistant#readme"
+}

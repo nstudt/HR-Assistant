@@ -1,19 +1,19 @@
 // const config = require('@config/config.js');
 const express = require("express");
 const app = express();
-const http = require("http").Server(app);
-const uuidv4 = require("uuid/v4");
+// const http = require("http").Server(app);
+// const uuidv4 = require("uuid/v4");
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const FileStore = require("session-file-store")(session);
+// const FileStore = require("session-file-store")(session);
 const passport = require("passport");
 const path = require("path");
-
+const db = require("./models/db");
+const mongoose = require("mongoose");
 const index_controller = require("./controllers/index_controller");
 
-
-("use strict");
+const Employee = require("./models/employee");
 
 // app.use(fileUpload({ preserveExtension: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,8 +35,23 @@ hbs.registerHelper("json", function(obj) {
 
 app.get("/", index_controller.home_page);
 
-const port = 5000;
-http.listen(port, function() {
-  console.log("listening on:", port);
-  
+// const port = 5000;
+// http.listen(port, function() {
+//   console.log("listening on:", port);
+// });
+
+db.dbconnect(true);
+const employee = new Employee({
+  _id: new mongoose.Types.ObjectId(),
+  first_name: "john",
+  last_name: "doe"
 });
+
+employee
+  .save()
+  .then(result => {
+    console.log(result);
+  })
+  .catch(err => console.log(err));
+
+// db.dbconnect(false);

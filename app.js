@@ -5,15 +5,17 @@ const app = express();
 // const uuidv4 = require("uuid/v4");
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
-const session = require("express-session");
+// const session = require("express-session");
 // const FileStore = require("session-file-store")(session);
 const passport = require("passport");
 const path = require("path");
-const db = require("./models/db");
-const mongoose = require("mongoose");
-const index_controller = require("./controllers/index_controller");
+// const db = require("./models/db");
+// const mongoose = require("mongoose");
+// const index_controller = require("./controllers/index_controller");
+const employeeRoutes = require("./routes/employeeRoutes");
+const employerRoutes = require("./routes/employeeRoutes");
 
-const Employee = require("./models/employee");
+
 
 // app.use(fileUpload({ preserveExtension: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -33,25 +35,43 @@ hbs.registerHelper("json", function(obj) {
   return new hbs.SafeString(JSON.stringify(obj));
 });
 
-app.get("/", index_controller.home_page);
+app.use("/", indexRoutes);
+app.use("/api/employee", employeeRoutes);
+app.use("/api/employer", employerRoutes);
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+// error handlers
+
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: {}
+  });
+});
 
 // const port = 5000;
 // http.listen(port, function() {
 //   console.log("listening on:", port);
 // });
 
-db.dbconnect(true);
-const employee = new Employee({
-  _id: new mongoose.Types.ObjectId(),
-  first_name: "john",
-  last_name: "doe"
-});
-
-employee
-  .save()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => console.log(err));
-
-// db.dbconnect(false);
+module.exports = app;

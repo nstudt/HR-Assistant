@@ -19,9 +19,7 @@
     "session-file-store": "^1.2.0",
     "uuidv4": "^2.0.0"
   },
-  "devDependencies": {
-    "jshint": "^2.9.7"
-  },
+  "devDependencies": {},
   "directories": {
     "test": "tests"
   },

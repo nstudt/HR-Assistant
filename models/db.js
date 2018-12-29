@@ -12,9 +12,9 @@ const dbURI = 'mongodb://192.168.254.108:27017/test';
 module.exports.dbconnect = (con) => {
     console.log(mongoose.connection.readyState);
   if (con == true) {
-    mongoose.connect(dbURI, {useMongoClient: true});
-      console.log('trying connection');
-      console.log(mongoose.connection.readyState);
+    mongoose.connect(dbURI, {useMongoClient: true})
+      .then(() => console.log('trying connection'))
+      .catch(() => console.log(mongoose.connection.readyState));
   }
   else if (con == false) {
       mongoose.connection.close();
@@ -53,6 +53,7 @@ module.exports.dbconnect = (con) => {
     });
   });
 };
+
 
 // BRING IN YOUR SCHEMAS & MODELS // For example
 require("./../models/company");

@@ -9,43 +9,33 @@ const Employee = require("../models/employee");
 // db.dbconnect(false);
 
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render("index");
-});
+// /* GET home page. */
+// router.get('/', function (req, res, next) {
+//     res.render('index');
+// });
 
-router.get('/get-data', async (req, res) => {
-  db.dbconnect(true);
-  console.log(req.params.employee_id);
-  try {
-    let employees;
-    if (req.query.term) {
-      var regExpTerm = new RegExp(req.query.term, "i");
-      var regExpSearch = [
-        { first_name: { $regex: regExpTerm } },
-        { last_name: { $regex: regExpTerm } },
-        { company_name: { $regex: regExpTerm } },
-        { employee_id: { $regex: regExpTerm } }
-      ];
-      employees = await Employee.find({
-        // userId: req.params.id,
-        $or: regExpSearch
-      });
-    } else {
-      //no filter - all employees
-      employees = await Employee.find({ company_id: req.params.company_id }); //TODO:add employee.company_id to req.params
+router.get('/employee/get-data', async (req, res) => {
+    db.dbconnect(true);
+    try {
+        let employees;
+        if (req.query.term) {
+            var regExpTerm = new RegExp(req.query.term, 'i');
+            var regExpSearch = [{ first_name: { $regex: regExpTerm } }, { last_name: { $regex: regExpTerm } }, { company_name: { $regex: regExpTerm } }, { employee_id: { $regex: regExpTerm } }];
+            employees = await Employee.find({ userId: req.params.id, '$or': regExpSearch });
+        } else {//no filter - all employees
+            employees = await Employee.find({ company_id: req.params.company_id }); //TODO:add employee.company_id to req.params
+        }
+
+        res.send(employees);
+    } catch (err) {
+        return res.status(500).send(err);
     }
-console.log('in /api/employee router')
-    res.send(employees);
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-  db.dbconnect(false);
+    db.dbconnect(false);
 });
 
-router.post("/insert", async (req, res) => {
+router.post("/employee/insert", async (req, res) => {
   db.dbconnect(true);
-  const employee = new Employee( req.body );
+  const employee = new Employee(req.body);
   try {
     let newEmployee = await employee.save();
 
@@ -66,11 +56,11 @@ router.post("/insert", async (req, res) => {
   db.dbconnect(false);
 });
 
-router.post("/update", async (req, res) => {
+router.post("/employee/update", async (req, res) => {
   db.dbconnect(true);
   try {
     let employee = await Employee.findOneAndUpdate(
-      { _id: req.body._id },
+      { _id: req.params.employee_id },
       req.body,
       { new: true }
     );
@@ -80,7 +70,7 @@ router.post("/update", async (req, res) => {
         .status(404)
         .send(
           new MyError("Not Found Error", [
-            "Employee for id " + req.body._id + " not found"
+            "Employee for id " + req.params.employee_id + " not found"
           ])
         );
     } else {
@@ -94,14 +84,14 @@ router.post("/update", async (req, res) => {
       .status(500)
       .send(
         new MyError("Unknown Server Error", [
-            "Unknow server error when updating employee" + req.body._id
+          "Unknow server error when updating employee" + req.params.employee_id
         ])
       );
   }
   db.dbconnect(false);
 });
 
-router.post("/delete", async (req, res) => {
+router.post("/employee/delete", async (req, res) => {
   db.dbconnect(true);
   try {
     let employee = await employee.findOneAndRemove({
